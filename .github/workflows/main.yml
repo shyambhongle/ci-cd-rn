@@ -18,3 +18,8 @@ jobs:
       - name: Build Android Release
         run: |
           cd android && ./gradlew clean && ./gradlew app:assembleRelease
+      - name: Download APK
+        uses: actions/download-artifact@v2
+        with:
+          name: apk
+          path: ${{ github.workspace}}/RN_Pipeline_Demo/android/app/build/outputs/apk/release
