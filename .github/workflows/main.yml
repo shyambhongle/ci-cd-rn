@@ -16,7 +16,7 @@ jobs:
           cache: "yarn"
 
       - name: Install Node modules
-        run: yarn ci
+        run: yarn install
 
       - name: Cache Gradle Wrapper
         uses: actions/cache@v2
