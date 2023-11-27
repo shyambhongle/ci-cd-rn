@@ -38,9 +38,14 @@ jobs:
       - name: Build Android ${{inputs.environment == 'release' && 'Release' || 'Debug'}}
         run: |
           cd android && ./gradlew assembleRelease
-      # Upload to Artifact
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
           name: app-release.apk
-          path: app/build/outputs/apk/release/app-release.apk
+          path: "android/app/build/outputs/apk/release/app-release.apk"
+      # Download to Artifact
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app-release.apk
+          path: "android/app/build/outputs/apk/release/app-release.apk"
