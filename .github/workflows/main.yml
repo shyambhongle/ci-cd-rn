@@ -39,8 +39,8 @@ jobs:
         run: |
           cd android && ./gradlew assembleRelease
       # Upload to Artifact
-      - name: Upload Artifact
+      - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
           name: app-release.apk
-          path: ${{github.workspace}}/RN_Pipeline_Demo/android/app/build/outputs/apk/release/app-release.apk
+          path: app/build/outputs/apk/release/app-release.apk
