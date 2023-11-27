@@ -1,25 +1,46 @@
-name: Android Build
+name: "Android Build"
 
 on:
   push:
-    branches:
-      - 'production'
+    branches: [ "production" ]
 jobs:
-  android-build:
-    name: Android Build
+  build-android:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v2
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile --network-timeout 300000
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "yarn"
+
+      - name: Install Node modules
+        run: yarn ci
+
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
       - name: Make Gradlew Executable
         run: cd android && chmod +x ./gradlew
-      - name: Build Android Release
+        # Build Command
+
+      - name: Build Android ${{inputs.environment == 'release' && 'Release' || 'Debug'}}
         run: |
-          cd android && ./gradlew clean && ./gradlew app:assembleRelease
-      - name: Download APK
+          cd android && ./gradlew assembleRelease
+      # Upload to Artifact
+      - name: Upload Artifact
         uses: actions/download-artifact@v2
         with:
-          name: apk
-          path: ${{ github.workspace}}/RN_Pipeline_Demo/android/app/build/outputs/apk/release
+          name: app-release.apk
+          path: "android/app/build/outputs/apk/release/app-release.apk"
