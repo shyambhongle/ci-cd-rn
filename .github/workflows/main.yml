@@ -1,0 +1,20 @@
+name: Android Build
+
+on:
+  push:
+    branches:
+      - 'production'
+jobs:
+  android-build:
+    name: Android Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --network-timeout 300000
+      - name: Make Gradlew Executable
+        run: cd android && chmod +x ./gradlew
+      - name: Build Android Release
+        run: |
+          cd android && ./gradlew clean && ./gradlew app:assembleRelease
